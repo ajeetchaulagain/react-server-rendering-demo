@@ -1,3 +1,3 @@
 # react-server-rendering-demo
 
-This repo demonstrated server rendering of the react components.
+This repo demonstrates server rendering of the react components.

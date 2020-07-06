@@ -5,6 +5,8 @@ import { renderToString } from "react-dom/server";
 import { readFileSync } from "fs";
 import { App } from "../client/App";
 
+import { handleModifyAnswerVotes } from "../shared/utility";
+
 const data = {
   questions: [
     {
@@ -41,8 +43,23 @@ const app = new express();
 
 app.use(express.static("dist"));
 
+app.get("/data", async (req, res) => {
+  res.json(data);
+});
+
+app.get("/vote/:answerId", (req, res) => {
+  const { query, params } = req;
+  data.answers = handleModifyAnswerVotes(
+    data.answers,
+    params.answerId,
+    +query.increment
+  );
+  res.send("Ok");
+});
+
 app.get("/", async (req, res) => {
   const index = readFileSync(`public/index.html`, `utf8`);
+  console.log("answers array", data.answers);
   const rendered = renderToString(<App {...data} />);
   res.send(index.replace("{{rendered}}", rendered));
 });
